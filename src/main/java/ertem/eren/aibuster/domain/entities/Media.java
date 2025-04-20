@@ -46,6 +46,9 @@ public class Media {
     this.id = id;
   }
   
+  public Media(UUID id, String type, MediaStatus status, LocalDateTime localDateTime) {
+  }
+  
   public UUID getId() {
     return id;
   }
