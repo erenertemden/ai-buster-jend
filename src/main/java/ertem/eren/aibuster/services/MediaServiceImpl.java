@@ -1,7 +1,7 @@
 package ertem.eren.aibuster.services;
 
-import ertem.eren.aibuster.domain.Media;
-import ertem.eren.aibuster.domain.MediaEntity;
+import ertem.eren.aibuster.domain.dto.MediaDto;
+import ertem.eren.aibuster.domain.entities.MediaEntity;
 import ertem.eren.aibuster.repositories.MediaRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,25 +25,25 @@ public class MediaServiceImpl implements MediaService {
   }
   
   @Override
-  public boolean isMediaAvailable(Media media) {
-    return mediaRepository.existsById(media.getId());
+  public boolean isMediaAvailable(MediaDto mediaDto) {
+    return mediaRepository.existsById(mediaDto.getId());
   }
   
   @Override
-  public Media save(final Media media) {
-    final MediaEntity mediaEntity = mediaToMediaEntity(media);
+  public MediaDto save(final MediaDto mediaDto) {
+    final MediaEntity mediaEntity = mediaToMediaEntity(mediaDto);
     final MediaEntity savedMediaEntity = mediaRepository.save(mediaEntity);
     return mediaEntityToMedia(savedMediaEntity);
   }
   
   @Override
-  public Optional<Media> findById(UUID id) {
+  public Optional<MediaDto> findById(UUID id) {
     final Optional<MediaEntity> foundMedia = mediaRepository.findById(id);
     return foundMedia.map(media -> mediaEntityToMedia(media));
   }
   
   @Override
-  public List<Media> listMedias() {
+  public List<MediaDto> listMedias() {
     final List<MediaEntity> foundMedias = mediaRepository.findAll();
     return foundMedias.stream().map(media -> mediaEntityToMedia(media)).collect(Collectors.toList());
   }
@@ -58,19 +58,19 @@ public class MediaServiceImpl implements MediaService {
     
   }
   
-  private MediaEntity mediaToMediaEntity (Media media) {
+  private MediaEntity mediaToMediaEntity (MediaDto mediaDto) {
    return MediaEntity.builder()
-      .id(media.getId())
-        .mediaType(media.getMediaType())
-      .mediaStatus(media.getMediaStatus())
+      .id(mediaDto.getId())
+        .mediaType(mediaDto.getMediaType())
+      .mediaStatus(mediaDto.getMediaStatus())
       
-      .mediaPath(media.getMediaPath())
-      .createdAt(media.getCreatedAt())
+      .mediaPath(mediaDto.getMediaPath())
+      .createdAt(mediaDto.getCreatedAt())
      .build();
   }
   
-  private Media mediaEntityToMedia (MediaEntity mediaEntity) {
-    return Media.builder()
+  private MediaDto mediaEntityToMedia (MediaEntity mediaEntity) {
+    return MediaDto.builder()
       .id(mediaEntity.getId())
       .mediaType(mediaEntity.getMediaType())
       .mediaStatus(mediaEntity.getMediaStatus())

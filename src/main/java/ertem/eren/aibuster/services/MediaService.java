@@ -1,6 +1,6 @@
 package ertem.eren.aibuster.services;
 
-import ertem.eren.aibuster.domain.Media;
+import ertem.eren.aibuster.domain.dto.MediaDto;
 
 import java.util.List;
 import java.util.Optional;
@@ -8,13 +8,13 @@ import java.util.UUID;
 
 public interface MediaService {
 
-  boolean isMediaAvailable(Media media);
+  boolean isMediaAvailable(MediaDto mediaDto);
   
-  Media save(Media media);
+  MediaDto save(MediaDto mediaDto);
   
-  Optional<Media> findById(UUID id);
+  Optional<MediaDto> findById(UUID id);
   
-  List<Media> listMedias();
+  List<MediaDto> listMedias();
   
   void deleteMediaById(UUID id);
 }

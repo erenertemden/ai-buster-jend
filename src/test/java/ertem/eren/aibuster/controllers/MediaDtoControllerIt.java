@@ -1,8 +1,8 @@
 package ertem.eren.aibuster.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import ertem.eren.aibuster.domain.Media;
-import ertem.eren.aibuster.domain.MediaEntity;
+import ertem.eren.aibuster.domain.dto.MediaDto;
+import ertem.eren.aibuster.domain.entities.MediaEntity;
 import ertem.eren.aibuster.repositories.MediaRepository;
 import ertem.eren.aibuster.services.MediaService;
 import ertem.eren.aibuster.services.TestData;
@@ -32,7 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @ExtendWith(SpringExtension.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-public class MediaControllerIt{
+public class MediaDtoControllerIt {
   
   @Autowired
   private MockMvc mockMvc;
@@ -43,18 +43,18 @@ public class MediaControllerIt{
   
   @Test
   public void testMedia() throws Exception {
-    final Media media = TestData.testMedia();
+    final MediaDto mediaDto = TestData.testMedia();
     final ObjectMapper objectMapper = new ObjectMapper();
-    final String mediaJson = objectMapper.writeValueAsString(media);
+    final String mediaJson = objectMapper.writeValueAsString(mediaDto);
     
-    mockMvc.perform(put("/medias/" + media.getId())
+    mockMvc.perform(put("/medias/" + mediaDto.getId())
         .contentType(MediaType.APPLICATION_JSON)
         .content(mediaJson))
       .andExpect(status().isCreated())
-      .andExpect(jsonPath("$.id").value(media.getId().toString()))
-      .andExpect(jsonPath("$.mediaType").value(media.getMediaType().name()))
-      .andExpect(jsonPath("$.mediaPath").value(media.getMediaPath()))
-      .andExpect(jsonPath("$.mediaStatus").value(media.getMediaStatus().name()))
+      .andExpect(jsonPath("$.id").value(mediaDto.getId().toString()))
+      .andExpect(jsonPath("$.mediaType").value(mediaDto.getMediaType().name()))
+      .andExpect(jsonPath("$.mediaPath").value(mediaDto.getMediaPath()))
+      .andExpect(jsonPath("$.mediaStatus").value(mediaDto.getMediaStatus().name()))
       .andExpect(jsonPath("$.createdAt").exists()); // Zaman eşleşmesini direkt .value ile test etmek zor olabilir
   }
   
@@ -66,23 +66,23 @@ public class MediaControllerIt{
   
   @Test
   public void testMediaRetrieveMediaWhenExists() throws Exception {
-    final Media media = TestData.testMedia();
+    final MediaDto mediaDto = TestData.testMedia();
     
-    mediaService.save(media);
+    mediaService.save(mediaDto);
     
-    mockMvc.perform(MockMvcRequestBuilders.get("/medias/" + media.getId()))
+    mockMvc.perform(MockMvcRequestBuilders.get("/medias/" + mediaDto.getId()))
       .andExpect(MockMvcResultMatchers.status().isOk())
-      .andExpect(jsonPath("$.id").value(media.getId().toString()))
-      .andExpect(jsonPath("$.mediaType").value(media.getMediaType().name()))
-      .andExpect(jsonPath("$.mediaPath").value(media.getMediaPath()))
-      .andExpect(jsonPath("$.mediaStatus").value(media.getMediaStatus().name()))
+      .andExpect(jsonPath("$.id").value(mediaDto.getId().toString()))
+      .andExpect(jsonPath("$.mediaType").value(mediaDto.getMediaType().name()))
+      .andExpect(jsonPath("$.mediaPath").value(mediaDto.getMediaPath()))
+      .andExpect(jsonPath("$.mediaStatus").value(mediaDto.getMediaStatus().name()))
       .andExpect(jsonPath("$.createdAt").exists());
   }
   
   @Test
   public void testListMediasReturnsEmptyListWhenNoMedia() throws Exception {
     when(mediaRepository.findAll()).thenReturn(new ArrayList<MediaEntity>());
-    final List<Media> result = underTest.listMedia();
+    final List<MediaDto> result = underTest.listMedia();
     assertEquals(0, result.size());
     
   }
@@ -91,7 +91,7 @@ public class MediaControllerIt{
   public void testListMediasReturnsMediaList() throws Exception {
     final MediaEntity mediaEntity = testMediaEntity();
     when(mediaRepository.findAll().thenReturn(List.of(mediaEntity)));
-    final List<Media> result = underTest.listMedias();
+    final List<MediaDto> result = underTest.listMedias();
     assertEqual(1, result.size());
   }
   
@@ -104,15 +104,15 @@ public class MediaControllerIt{
   
   @Test
   public void testThatListMediasReturns404WhenMediaDoesNotExist() throws Exception {
-    final Media media = TestData.testMedia();
-    mediaService.save(media);
+    final MediaDto mediaDto = TestData.testMedia();
+    mediaService.save(mediaDto);
     
     mockMvc.perform(MockMvcRequestBuilders.get("/medias/" )
       .andExpect(MockMvcResultMatchers.status().isOk())
-      .andExpect(jsonPath("$.[0].id").value(media.getId().toString()))
-      .andExpect(jsonPath("$.[0].mediaType").value(media.getMediaType().name()))
-      .andExpect(jsonPath("$.[0].mediaPath").value(media.getMediaPath()))
-      .andExpect(jsonPath("$.[0].mediaStatus").value(media.getMediaStatus().name())));
+      .andExpect(jsonPath("$.[0].id").value(mediaDto.getId().toString()))
+      .andExpect(jsonPath("$.[0].mediaType").value(mediaDto.getMediaType().name()))
+      .andExpect(jsonPath("$.[0].mediaPath").value(mediaDto.getMediaPath()))
+      .andExpect(jsonPath("$.[0].mediaStatus").value(mediaDto.getMediaStatus().name())));
     
   }
 }

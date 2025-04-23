@@ -1,8 +1,6 @@
-package ertem.eren.aibuster.domain;
+package ertem.eren.aibuster.domain.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,12 +14,23 @@ import java.util.UUID;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
+
 @Table(name = "medias")
 public class MediaEntity {
   @Id
+  @GeneratedValue(strategy = GenerationType.UUID)
+  @Column(name = "id", nullable = false, updatable = false)
   private UUID id;
+  
+  @Column(name = "media_type", nullable = false, updatable = false)
   private MediaType mediaType;
+  
+  @Column(name = "media_path", nullable = false)
   private String mediaPath;
+  
+  @Column(name = "media_status", nullable = false)
   private MediaStatus mediaStatus;
+  
+  @Column(name = "created_at", nullable = false, updatable = false)
   private LocalDateTime createdAt;
 }

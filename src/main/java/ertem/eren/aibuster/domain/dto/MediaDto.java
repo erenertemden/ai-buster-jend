@@ -1,7 +1,9 @@
-package ertem.eren.aibuster.domain;
+package ertem.eren.aibuster.domain.dto;
 
 //dto
-import jakarta.persistence.Entity;
+import ertem.eren.aibuster.domain.entities.MediaStatus;
+import ertem.eren.aibuster.domain.entities.MediaType;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,11 +15,13 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Media {
-  
+
+public class MediaDto {
   private UUID id;
   private MediaType mediaType;
   private String mediaPath;
   private MediaStatus mediaStatus;
   private LocalDateTime createdAt;
+
+
 }//using in service layer

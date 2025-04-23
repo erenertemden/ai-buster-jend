@@ -1,6 +1,6 @@
 # AI Buster Spring Boot Backend
 
-The Spring Boot service accepts media files, stores them locally, and forwards them to a Python microservice for AI manipulation detection.
+The Spring Boot service accepts mediaDto files, stores them locally, and forwards them to a Python microservice for AI manipulation detection.
 
 ## Table of Contents
 
@@ -13,29 +13,29 @@ The Spring Boot service accepts media files, stores them locally, and forwards t
 - [Usage](#usage)
     - [File Upload](#file-upload)
     - [Manipulation Check](#manipulation-check)
-    - [List Media](#list-media)
+    - [List Media](#list-mediaDto)
 - [Project Structure](#project-structure)
 - [Contributing](#contributing)
 - [License](#license)
 
 ## Overview
 
-This project provides a Spring Boot REST API that receives media files, stores them in a local `uploads/` directory, and returns analysis results in JSON format.
+This project provides a Spring Boot REST API that receives mediaDto files, stores them in a local `uploads/` directory, and returns analysis results in JSON format.
 
 ## Features
 
 - **File Upload**: Upload images or videos via HTTP multipart/form-data
 - **Local Storage**: Save files under `uploads/` with a UUID-prefixed filename
 - **Manipulation Check**: Synchronously call an external Python service for AI-based detection
-- **List Media**: Retrieve stored media metadata as DTOs from the database
+- **List Media**: Retrieve stored mediaDto metadata as DTOs from the database
 
 ## Architecture
 
-1. **Controllers**: Endpoints at `/api/files/upload`, `/api/check/image`, and `/api/media`
+1. **Controllers**: Endpoints at `/api/files/upload`, `/api/check/image`, and `/api/mediaDto`
 2. **Services**:
     - `FileStorageService`: Handles saving files to disk
     - `AnalyzerService`: Sends files to the Python checker
-    - `MediaListService`: Fetches media records from the database
+    - `MediaListService`: Fetches mediaDto records from the database
 3. **Repository**: `MediaRepository` using Spring Data JPA
 4. **Entity & DTO**: `Media` entity and `MediaDto` record
 5. **Mapper**: Manual `MediaMapper` implementation
@@ -85,13 +85,13 @@ Send a POST request with multipart data:
 
 ```bash
 curl -X POST http://localhost:8080/api/files/upload \
-  -F "file=@/path/to/your/media.jpg"
+  -F "file=@/path/to/your/mediaDto.jpg"
 ```
 
 **Response**:
 
 ```json
-{ "url": "/uploads/{uuid}-media.jpg" }
+{ "url": "/uploads/{uuid}-mediaDto.jpg" }
 ```
 
 ### Manipulation Check
@@ -100,7 +100,7 @@ Submit an uploaded file for AI analysis:
 
 ```bash
 curl -X POST http://localhost:8080/api/check/image \
-  -F "file=@uploads/{uuid}-media.jpg"
+  -F "file=@uploads/{uuid}-mediaDto.jpg"
 ```
 
 **Response**:
@@ -111,10 +111,10 @@ curl -X POST http://localhost:8080/api/check/image \
 
 ### List Media
 
-Retrieve all stored media records:
+Retrieve all stored mediaDto records:
 
 ```bash
-curl http://localhost:8080/api/media
+curl http://localhost:8080/api/mediaDto
 ```
 
 **Response**:

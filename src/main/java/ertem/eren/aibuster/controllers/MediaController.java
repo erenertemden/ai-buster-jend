@@ -1,6 +1,6 @@
 package ertem.eren.aibuster.controllers;
 
-import ertem.eren.aibuster.domain.Media;
+import ertem.eren.aibuster.domain.dto.MediaDto;
 import ertem.eren.aibuster.services.MediaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,39 +23,39 @@ public class MediaController {
   }
   
   @PutMapping(path = "/medias/{id}")
-  public ResponseEntity<Media> createUpdateMedia(
+  public ResponseEntity<MediaDto> createUpdateMedia(
     @PathVariable final UUID id,
-    @RequestBody final Media media) {
+    @RequestBody final MediaDto mediaDto) {
     
-    media.setId(id);
-    final boolean isMediaExist = mediaService.isMediaAvailable(media);
-    final Media savedMedia = mediaService.save(media);
+    mediaDto.setId(id);
+    final boolean isMediaExist = mediaService.isMediaAvailable(mediaDto);
+    final MediaDto savedMediaDto = mediaService.save(mediaDto);
     
     if (isMediaExist) {
-      return new ResponseEntity<Media>(savedMedia, HttpStatus.OK);
+      return new ResponseEntity<MediaDto>(savedMediaDto, HttpStatus.OK);
     }
     else {
-      return new ResponseEntity<Media>(savedMedia, HttpStatus.CONFLICT);
+      return new ResponseEntity<MediaDto>(savedMediaDto, HttpStatus.CONFLICT);
     }
     
   }
   
   @GetMapping(path = "/media/{id}")
-  public ResponseEntity<Media> retrieveMedia(@PathVariable final UUID id) {
-    final Optional<Media> foundMedia = mediaService.findById(id);
+  public ResponseEntity<MediaDto> retrieveMedia(@PathVariable final UUID id) {
+    final Optional<MediaDto> foundMedia = mediaService.findById(id);
     
-    return foundMedia.map(media -> new ResponseEntity<Media>(media,
+    return foundMedia.map(media -> new ResponseEntity<MediaDto>(media,
       HttpStatus.OK))
       .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
   }
   
   @GetMapping(path = "/medias")
-  public ResponseEntity<List<Media>> retrieveAllMedia() {
-    return new ResponseEntity<List<Media>>(mediaService.listMedias(), HttpStatus.OK);
+  public ResponseEntity<List<MediaDto>> retrieveAllMedia() {
+    return new ResponseEntity<List<MediaDto>>(mediaService.listMedias(), HttpStatus.OK);
   }
   
   @DeleteMapping(path = "/medias/ {id}")
-  public ResponseEntity<Media> deleteMedia(@PathVariable final UUID id) {
+  public ResponseEntity<MediaDto> deleteMedia(@PathVariable final UUID id) {
     mediaService.deleteMediaById(id);
     return new ResponseEntity<>(HttpStatus.NO_CONTENT);
   }
