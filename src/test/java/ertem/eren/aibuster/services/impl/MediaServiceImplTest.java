@@ -2,8 +2,6 @@ package ertem.eren.aibuster.services.impl;
 
 import ertem.eren.aibuster.domain.Media;
 import ertem.eren.aibuster.domain.MediaEntity;
-import ertem.eren.aibuster.domain.MediaStatus;
-import ertem.eren.aibuster.domain.MediaType;
 import ertem.eren.aibuster.repositories.MediaRepository;
 import ertem.eren.aibuster.services.MediaServiceImpl;
 import org.junit.jupiter.api.Test;
@@ -12,9 +10,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.LocalDateTime;
+
+import java.util.Optional;
 import java.util.UUID;
 
+import static ertem.eren.aibuster.services.TestData.testMedia;
+import static ertem.eren.aibuster.services.TestData.testMediaEntity;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 import static org.mockito.ArgumentMatchers.eq;
@@ -30,32 +31,34 @@ public class MediaServiceImplTest {
   
   @Test
   public void testThatMediaIsSaved() {
-    UUID id = UUID.randomUUID();
-    LocalDateTime createdAt = LocalDateTime.now();
+    final Media media = testMedia();
     
-    Media media = Media.builder()
-      .id(id)
-      .mediaType(MediaType.PHOTO)
-      .mediaPath("/test/t")
-      .mediaStatus(MediaStatus.ORIGINAL)
-      .createdAt(createdAt)
-      .build();
-    
-    MediaEntity mediaEntity = MediaEntity.builder()
-      .id(id)
-      .mediaType(MediaType.PHOTO)
-      .mediaPath("/test/t")
-      .mediaStatus(MediaStatus.ORIGINAL)
-      .createdAt(createdAt)
-      .build();
+    final MediaEntity mediaEntity = testMediaEntity();
     
     when(mediaRepository.save(eq(mediaEntity))).thenReturn(mediaEntity);
     
-    Media result = underTest.create(media);
+    final Media result = underTest.save(media);
+    assertEquals(media, result);
+  }
+  
+  @Test
+  public void testThatFindByIdReturnsMediaWhenNoMediaFound() {
+    final UUID id = UUID.randomUUID();
+    when(mediaRepository.findById(eq(id))).thenReturn(Optional.empty());
     
-    assertEquals(media.getId(), result.getId());
-    assertEquals(media.getMediaPath(), result.getMediaPath());
-    assertEquals(media.getMediaType(), result.getMediaType());
-    assertEquals(media.getMediaStatus(), result.getMediaStatus());
+    final Optional<Media> result = underTest.findById(id);
+    assertEquals(Optional.empty(), result);
+  }
+  
+  @Test
+  public void testThatFindByIdReturnsMediaWhenMediaFound() {
+    final UUID id = UUID.randomUUID();
+    final Media media = testMedia();
+    final MediaEntity mediaEntity = testMediaEntity();
+    
+    when(mediaRepository.findById(eq(media.getId()))).thenReturn(Optional.of(mediaEntity));
+    
+    final Optional<Media> result = underTest.findById(media.getId());
+    assertEquals(Optional.of(media), result);
   }
 }
