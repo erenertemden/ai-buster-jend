@@ -7,30 +7,26 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
-@Data
-@Builder
+// entity/MediaEntity.java
 @Entity
-@AllArgsConstructor
-@NoArgsConstructor
-
 @Table(name = "medias")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class MediaEntity {
   @Id
-  @GeneratedValue(strategy = GenerationType.UUID)
-  @Column(name = "id", nullable = false, updatable = false)
-  private UUID id;
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  private Long id;
   
-  @Column(name = "media_type", nullable = false, updatable = false)
-  private MediaType mediaType;
-  
-  @Column(name = "media_path", nullable = false)
   private String mediaPath;
   
-  @Column(name = "media_status", nullable = false)
+  @Enumerated(EnumType.STRING)
+  private MediaFormat mediaFormat;
+  
+  @Enumerated(EnumType.STRING)
   private MediaStatus mediaStatus;
   
-  @Column(name = "created_at", nullable = false, updatable = false)
   private LocalDateTime createdAt;
 }

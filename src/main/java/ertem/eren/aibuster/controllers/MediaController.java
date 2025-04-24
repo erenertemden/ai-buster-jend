@@ -1,63 +1,38 @@
 package ertem.eren.aibuster.controllers;
 
-import ertem.eren.aibuster.domain.dto.MediaDto;
-import ertem.eren.aibuster.services.MediaService;
-import org.springframework.beans.factory.annotation.Autowired;
+import ertem.eren.aibuster.domain.entities.MediaFormat;
+import ertem.eren.aibuster.services.MediaUploadService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.io.IOException;
 
+// controller/MediaController.java
 @RestController
+@RequestMapping("/api/v1/media")
+@RequiredArgsConstructor
 public class MediaController {
   
-  private final MediaService mediaService;
+  private final MediaUploadService mediaUploadService;
   
-  @Autowired
-  public MediaController(final MediaService mediaService) {
-    this.mediaService = mediaService;
-    
-  }
-  
-  @PutMapping(path = "/medias/{id}")
-  public ResponseEntity<MediaDto> createUpdateMedia(
-    @PathVariable final UUID id,
-    @RequestBody final MediaDto mediaDto) {
-    
-    mediaDto.setId(id);
-    final boolean isMediaExist = mediaService.isMediaAvailable(mediaDto);
-    final MediaDto savedMediaDto = mediaService.save(mediaDto);
-    
-    if (isMediaExist) {
-      return new ResponseEntity<MediaDto>(savedMediaDto, HttpStatus.OK);
+  @PostMapping("/upload")
+  public ResponseEntity<Boolean> upload(@RequestParam("file") MultipartFile file,
+                                        @RequestParam("mediaFormat") MediaFormat mediaFormat) {
+    try {
+      boolean result = mediaUploadService.storeFileAndValidate(file, mediaFormat);
+      return ResponseEntity.ok(result);
+    } catch (IOException e) {
+      e.printStackTrace();
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(false);
     }
-    else {
-      return new ResponseEntity<MediaDto>(savedMediaDto, HttpStatus.CONFLICT);
-    }
-    
   }
   
-  @GetMapping(path = "/media/{id}")
-  public ResponseEntity<MediaDto> retrieveMedia(@PathVariable final UUID id) {
-    final Optional<MediaDto> foundMedia = mediaService.findById(id);
-    
-    return foundMedia.map(media -> new ResponseEntity<MediaDto>(media,
-      HttpStatus.OK))
-      .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+  @DeleteMapping("/cleanup")
+  public ResponseEntity<Void> cleanupUnsupported() {
+    mediaUploadService.cleanupUnsupportedFormats();
+    return ResponseEntity.noContent().build();
   }
-  
-  @GetMapping(path = "/medias")
-  public ResponseEntity<List<MediaDto>> retrieveAllMedia() {
-    return new ResponseEntity<List<MediaDto>>(mediaService.listMedias(), HttpStatus.OK);
-  }
-  
-  @DeleteMapping(path = "/medias/ {id}")
-  public ResponseEntity<MediaDto> deleteMedia(@PathVariable final UUID id) {
-    mediaService.deleteMediaById(id);
-    return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-  }
-  
 }
