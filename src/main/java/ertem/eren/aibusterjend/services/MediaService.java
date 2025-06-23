@@ -14,11 +14,17 @@ public class MediaService {
     this.repository = repository;
   }
   
+  
+  //dto to entity
   public void saveData(MediaRequest request) {
     MediaEntity entity = new MediaEntity();
     entity.setPath(request.getPath());
     entity.setRate(request.getRate());
     entity.setFlag(request.isFlag());
-    repository.save(entity);
+    repository.save(entity); //send to the jpa
   }
+  
+
+  
+  
 }

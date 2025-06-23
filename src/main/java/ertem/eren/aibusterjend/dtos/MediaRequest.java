@@ -1,6 +1,7 @@
 package ertem.eren.aibusterjend.dtos;
 
 public class MediaRequest {
+  
   private String path;
   private double rate;
   private boolean flag;

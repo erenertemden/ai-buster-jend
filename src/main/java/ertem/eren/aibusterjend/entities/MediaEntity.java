@@ -20,17 +20,36 @@ public class MediaEntity {
     this.createdAt = LocalDateTime.now();
   }
   
-  // Getters and Setters
-  public Long getId() { return id; }
+ 
+  public Long getId() {
+    return id;
+  }
   
-  public String getPath() { return path; }
-  public void setPath(String path) { this.path = path; }
+  public String getPath() {
+    return path;
+  }
   
-  public double getRate() { return rate; }
-  public void setRate(double rate) { this.rate = rate; }
+  public void setPath(String path) {
+    this.path = path;
+  }
   
-  public boolean isFlag() { return flag; }
-  public void setFlag(boolean flag) { this.flag = flag; }
+  public double getRate() {
+    return rate;
+  }
   
-  public LocalDateTime getCreatedAt() { return createdAt; }
+  public void setRate(double rate) {
+    this.rate = rate;
+  }
+  
+  public boolean isFlag() {
+    return flag;
+  }
+  
+  public void setFlag(boolean flag) {
+    this.flag = flag;
+  }
+  
+  public LocalDateTime getCreatedAt() {
+    return createdAt;
+  }
 }
